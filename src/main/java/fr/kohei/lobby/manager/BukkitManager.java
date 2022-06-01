@@ -21,7 +21,7 @@ public class BukkitManager {
     public void registerListeners() {
         PluginManager pluginManager = main.getServer().getPluginManager();
 
-        pluginManager.registerEvents(new PlayerListeners(main), main);
+        pluginManager.registerEvents(new PlayerListeners(), main);
     }
 
     public void loadCommands() {

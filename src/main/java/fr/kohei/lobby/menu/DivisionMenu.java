@@ -3,7 +3,7 @@ package fr.kohei.lobby.menu;
 import fr.kohei.BukkitAPI;
 import fr.kohei.common.cache.Division;
 import fr.kohei.common.cache.ProfileData;
-import fr.kohei.lobby.ProgressBar;
+import fr.kohei.lobby.task.ProgressBar;
 import fr.kohei.menu.Button;
 import fr.kohei.menu.Menu;
 import fr.kohei.menu.pagination.PaginatedMenu;

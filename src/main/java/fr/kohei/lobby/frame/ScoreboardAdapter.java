@@ -3,7 +3,7 @@ package fr.kohei.lobby.frame;
 import fr.kohei.common.cache.Division;
 import fr.kohei.common.cache.ProfileData;
 import fr.kohei.lobby.Main;
-import fr.kohei.lobby.ProgressBar;
+import fr.kohei.lobby.task.ProgressBar;
 import fr.kohei.lobby.lobby.LobbyPlayer;
 import fr.kohei.BukkitAPI;
 import fr.kohei.utils.TimeUtil;

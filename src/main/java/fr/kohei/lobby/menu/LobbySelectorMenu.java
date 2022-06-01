@@ -6,9 +6,9 @@ import de.dytanic.cloudnet.driver.service.ServiceConfiguration;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceLifeCycle;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
+import fr.kohei.BukkitAPI;
 import fr.kohei.common.cache.ProfileData;
 import fr.kohei.common.cache.Rank;
-import fr.kohei.BukkitAPI;
 import fr.kohei.manager.server.LobbyServer;
 import fr.kohei.menu.Button;
 import fr.kohei.menu.Menu;
@@ -122,11 +122,13 @@ public class LobbySelectorMenu extends PaginatedMenu {
 
             LobbyServer server = getLobbyFromPort(cloudService.getAddress().getPort());
 
-            if(restricted && server.isRestricted()) {
+            if (server == null) continue;
+
+            if (restricted && server.isRestricted()) {
                 buttons.put(i++, new LobbyButton(server, cloudService));
             }
 
-            if(!restricted && !server.isRestricted()) {
+            if (!restricted && !server.isRestricted()) {
                 buttons.put(i++, new LobbyButton(server, cloudService));
             }
         }
@@ -194,7 +196,7 @@ public class LobbySelectorMenu extends PaginatedMenu {
         public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
             ProfileData profile = BukkitAPI.getCommonAPI().getProfile(player.getUniqueId());
 
-            if(profile.getRank().permissionPower() < 20) {
+            if (profile.getRank().permissionPower() < 20 && server.isRestricted()) {
                 player.sendMessage(ChatUtil.prefix("&cVous ne pouvez pas rejoindre un lobby réservés aux gradés."));
                 return;
             }

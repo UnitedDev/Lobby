@@ -1,7 +1,7 @@
 package fr.kohei.lobby.menu;
 
-import fr.kohei.lobby.Main;
 import fr.kohei.BukkitAPI;
+import fr.kohei.lobby.Main;
 import fr.kohei.manager.server.CTFServer;
 import fr.kohei.manager.server.UHCServer;
 import fr.kohei.menu.Button;
@@ -63,7 +63,7 @@ public class ServerSelectorMenu extends Menu {
 
 
         buttons.put(20, new UHCGamemodeButton(UHCServer.ServerType.MHA));
-        buttons.put(21, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&cSoon...").toItemStack()));
+        buttons.put(21, new UHCGamemodeButton(UHCServer.ServerType.MUGIWARA));
         buttons.put(29, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&cSoon...").toItemStack()));
         buttons.put(30, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&cSoon...").toItemStack()));
 
@@ -155,9 +155,14 @@ public class ServerSelectorMenu extends Menu {
             List<String> lore = new ArrayList<>();
             lore.add("&fPermet d'accéder à la liste de serveurs");
             lore.add("&fdu mode de jeu &c" + game.getName());
-            if(game == UHCServer.ServerType.MHA) {
+            if (game == UHCServer.ServerType.MHA) {
                 lore.add("");
                 lore.add("&8┃ &7Créateur: &fAlexQLF");
+                lore.add("&8┃ &7Développeur: &fRhodless");
+            }
+            if (game == UHCServer.ServerType.MUGIWARA) {
+                lore.add("");
+                lore.add("&8┃ &7Créateur: &fShot0w");
                 lore.add("&8┃ &7Développeur: &fRhodless");
             }
             lore.add("");

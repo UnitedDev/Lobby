@@ -5,6 +5,7 @@ import fr.kohei.lobby.lobby.LobbyPlayer;
 import fr.kohei.lobby.menu.LobbySelectorMenu;
 import fr.kohei.lobby.menu.ServerSelectorMenu;
 import fr.kohei.utils.Heads;
+import fr.kohei.utils.ItemBuilder;
 import fr.kohei.utils.item.CustomItem;
 import org.bukkit.Material;
 import org.bukkit.SkullType;
@@ -23,6 +24,7 @@ public class LobbyItems {
     public static final CustomItem LAST_CHECKPOINT = new CustomItem(Material.FEATHER, "Dernier Checkpoint", click -> click.getPlayer().teleport(Main.getJumpManager().getCheckpoints().get(new LobbyPlayer(click.getPlayer()).getParkour().getCheckpoint())));
     public static final CustomItem RESTART_PARKOUR = new CustomItem(Material.SLIME_BALL, "Recommencer", click -> new LobbyPlayer(click.getPlayer()).leaveParkour());
     public static final CustomItem LEAVE_PARKOUR = new CustomItem(new ItemStack(Material.INK_SACK, 1, (byte) 1), "Quitter", click -> new LobbyPlayer(click.getPlayer()).leaveParkour());
+    public static final CustomItem SHOP = new CustomItem(Heads.SHOP.toItemStack(), "Boutique", click -> {});
 
     public static ItemStack getVisibilityItem(Player player) {
         ItemStack toReturn = VISIBILITY.toItemStack();

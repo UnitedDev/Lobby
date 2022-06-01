@@ -1,14 +1,15 @@
 package fr.kohei.lobby.listeners;
 
+import fr.kohei.BukkitAPI;
+import fr.kohei.common.RedisProvider;
 import fr.kohei.common.cache.ProfileData;
 import fr.kohei.common.cache.Rank;
 import fr.kohei.lobby.Main;
 import fr.kohei.lobby.lobby.LobbyPlayer;
 import fr.kohei.lobby.manager.JumpManager;
-import fr.kohei.BukkitAPI;
+import fr.kohei.lobby.menu.ProfileMenu;
 import fr.kohei.utils.ChatUtil;
 import fr.kohei.utils.ScoreboardTeam;
-import fr.kohei.utils.TimeUtil;
 import fr.kohei.utils.item.CustomItem;
 import fr.kohei.utils.item.CustomItemEvent;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,19 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 @RequiredArgsConstructor
 public class PlayerListeners implements Listener {
 
-    private final Main main;
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            ProfileData profile = BukkitAPI.getCommonAPI().getProfile(player.getUniqueId());
+            if (profile.getRank().getPermissionPower() < 30) {
+                event.getPlayer().hidePlayer(player);
+            }
+            ProfileData target = BukkitAPI.getCommonAPI().getProfile(event.getPlayer().getUniqueId());
+            if (target.getRank().getPermissionPower() < 30) {
+                player.hidePlayer(event.getPlayer());
+            }
+        });
+    }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -45,9 +58,8 @@ public class PlayerListeners implements Listener {
 
         lobbyPlayer.refreshHotbar();
         lobbyPlayer.teleportToSpawn();
-        Bukkit.getOnlinePlayers().forEach(player1 -> new LobbyPlayer(player1).updateVisibility());
 
-        Bukkit.getScheduler().runTaskAsynchronously(Main.getInstance(), () -> {
+        RedisProvider.redisProvider.getExecutor().execute(() -> {
             ProfileData profile = BukkitAPI.getCommonAPI().getProfile(player.getUniqueId());
             Rank rank = profile.getRank();
             if (profile.getRank().permissionPower() > 0) {
@@ -58,7 +70,6 @@ public class PlayerListeners implements Listener {
                 ((CraftPlayer) player).getHandle().playerConnection.sendPacket(team.createTeam());
             }
         });
-
     }
 
     @EventHandler
@@ -69,6 +80,21 @@ public class PlayerListeners implements Listener {
         if (customItem == null) return;
         if (customItem.getCallable() == null) return;
         customItem.getCallable().accept(new CustomItemEvent((Player) event.getWhoClicked(), event.getCurrentItem(), true));
+
+        if (event.getCurrentItem().getItemMeta().getDisplayName().contains("Profil")) {
+            new ProfileMenu(null).openMenu((Player) event.getWhoClicked());
+        }
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent event) {
+        if (event.getItem() == null) return;
+
+        if (!event.getItem().hasItemMeta()) return;
+
+        if (event.getItem().getItemMeta().getDisplayName().contains("Profil")) {
+            new ProfileMenu(null).openMenu(event.getPlayer());
+        }
     }
 
     @EventHandler

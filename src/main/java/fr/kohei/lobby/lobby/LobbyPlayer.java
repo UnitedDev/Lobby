@@ -38,14 +38,14 @@ public class LobbyPlayer {
             player.setAllowFlight(true);
         }
 
-        player.getInventory().setItem(0, LobbyItems.getVisibilityItem(player));
+        player.getInventory().setItem(0, LobbyItems.SERVER_SELECTOR.toItemStack());
         player.getInventory().setItem(1, LobbyItems.getProfileItem(player));
         if(isInParkour()) {
             player.getInventory().setItem(3, LobbyItems.LAST_CHECKPOINT.toItemStack());
             player.getInventory().setItem(4, LobbyItems.RESTART_PARKOUR.toItemStack());
             player.getInventory().setItem(5, LobbyItems.LEAVE_PARKOUR.toItemStack());
         } else {
-            player.getInventory().setItem(4, LobbyItems.SERVER_SELECTOR.toItemStack());
+            player.getInventory().setItem(4, LobbyItems.SHOP.toItemStack());
         }
         player.getInventory().setItem(7, LobbyItems.COSMETICS.toItemStack());
         player.getInventory().setItem(8, LobbyItems.LOBBY_SELECTOR.toItemStack());

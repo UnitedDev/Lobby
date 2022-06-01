@@ -1,4 +1,4 @@
-package fr.kohei.lobby;
+package fr.kohei.lobby.task;
 
 import com.google.common.base.Strings;
 import org.bukkit.ChatColor;

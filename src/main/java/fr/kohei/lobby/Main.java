@@ -62,10 +62,12 @@ public class Main extends JavaPlugin {
         new Frame(this, new ScoreboardAdapter());
 
         spawn.getWorld().setGameRuleValue("doDaylightCycle", "false");
+        spawn.getWorld().setGameRuleValue("randomTickSpeed", "0");
 
         for (Rank value : BukkitAPI.getCommonAPI().getRanks()) {
+
             String position = String.valueOf(PlayersTask.number(value.permissionPower()));
-            String prefix = ChatUtil.translate(value.getTabPrefix() + " ");
+            String prefix = ChatUtil.translate(value.getTabPrefix() + (value.token().equalsIgnoreCase("default") ? "" : " "));
             teams.add(new ScoreboardTeam(position, prefix));
         }
 
