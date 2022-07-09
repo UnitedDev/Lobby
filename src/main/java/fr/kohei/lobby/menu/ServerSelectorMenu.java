@@ -1,11 +1,11 @@
 package fr.kohei.lobby.menu;
 
 import fr.kohei.BukkitAPI;
+import fr.kohei.common.cache.server.impl.CTFServer;
+import fr.kohei.common.cache.server.impl.UHCServer;
 import fr.kohei.lobby.Main;
-import fr.kohei.manager.server.CTFServer;
-import fr.kohei.manager.server.UHCServer;
 import fr.kohei.menu.Button;
-import fr.kohei.menu.Menu;
+import fr.kohei.menu.GlassMenu;
 import fr.kohei.menu.buttons.DisplayButton;
 import fr.kohei.utils.Heads;
 import fr.kohei.utils.ItemBuilder;
@@ -21,33 +21,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ServerSelectorMenu extends Menu {
+public class ServerSelectorMenu extends GlassMenu {
 
     @Override
-    public Map<Integer, Button> getButtons(Player player) {
+    public int getGlassColor() {
+        return 5;
+    }
+
+    @Override
+    public Map<Integer, Button> getAllButtons(Player player) {
         Map<Integer, Button> buttons = new HashMap<>();
-
-        for (int i : new int[]{3, 5, 9, 17, 36, 44}) {
-            buttons.put(i, new DisplayButton(new ItemBuilder(Material.STAINED_GLASS_PANE).setDurability(1).setName(" ").toItemStack()));
-        }
-
-        for (int i : new int[]{0, 8, 45, 53}) {
-            buttons.put(i, new DisplayButton(new ItemBuilder(Heads.LUCKY.toItemStack()).setName(" ").toItemStack()));
-        }
-
-        for (int i : new int[]{1, 2, 6, 7, 10, 16, 18, 26, 27, 37, 35, 52, 51, 47, 46, 43}) {
-            buttons.put(i, new DisplayButton(new ItemBuilder(Material.STAINED_GLASS_PANE).setDurability(14).setName(" ").toItemStack()));
-        }
 
         buttons.put(4, new Button() {
             @Override
             public ItemStack getButtonItem(Player player) {
                 return new ItemBuilder(Material.SKULL_ITEM).setDurability(SkullType.PLAYER.ordinal()).setSkullOwner(player.getName())
-                        .setName("&cMon Profil").setLore(
+                        .setName("&6&lMon Profil").setLore(
                                 "&fPermet d'accéder à mon profil pour modifier",
                                 "&fvos options.",
                                 "",
-                                "&f&l» &cCliquez-ici pour y accéder"
+                                "&f&l» &eCliquez-ici pour y accéder"
                         ).toItemStack();
             }
 
@@ -56,21 +49,83 @@ public class ServerSelectorMenu extends Menu {
                 new ProfileMenu(new ServerSelectorMenu()).openMenu(player);
             }
         });
+        buttons.put(37, new Button() {
+            @Override
+            public ItemStack getButtonItem(Player player) {
+                return new ItemBuilder(Material.ENDER_PORTAL_FRAME).setName("&6&lChanger de Lobby").setLore(
+                        "&fPermet d'accéder à la liste des lobbies.",
+                        "",
+                        "&f&l» &eCliquez-ici pour y accéder"
+                ).toItemStack();
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
+                new ProfileMenu(new ServerSelectorMenu()).openMenu(player);
+            }
+        });
+        buttons.put(16, new Button() {
+            @Override
+            public ItemStack getButtonItem(Player player) {
+                return new ItemBuilder(Heads.SHOP.toItemStack()).setName("&6&lBoutique").setLore(
+                        "&fPermet d'accéder à tout la boutique",
+                        "&fdu serveur.",
+                        "",
+                        "&f&l» &eCliquez-ici pour y accéder"
+                ).toItemStack();
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
+                new ShopMenu(new ServerSelectorMenu()).openMenu(player);
+            }
+        });
+        buttons.put(43, new Button() {
+            @Override
+            public ItemStack getButtonItem(Player player) {
+                return new ItemBuilder(Heads.LUCKY.toItemStack()).setName("&6&lBesoin d'Aide").setLore(
+                        "&fSi vous avez besoin d'aide, vous pouvez",
+                        "&futiliser la commande /stafflist et contacter",
+                        "&fun membre du staff",
+                        "",
+                        "&f&l» &eCliquez-ici pour y accéder"
+                ).toItemStack();
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
+                player.closeInventory();
+                player.chat("/stafflist");
+            }
+        });
+        buttons.put(10, new Button() {
+            @Override
+            public ItemStack getButtonItem(Player player) {
+                return new ItemBuilder(Material.REDSTONE_COMPARATOR).setName("&6&lParamètres").setLore(
+                        "&fPermet d'accéder à vos paramètres.",
+                        "",
+                        "&f&l» &eCliquez-ici pour y accéder"
+                ).toItemStack();
+            }
+
+            @Override
+            public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
+                new SettingsMenu(new ServerSelectorMenu()).openMenu(player);
+            }
+        });
 
         buttons.put(49, new TeleportToSpawnButton());
         buttons.put(50, new AllGamemodeButton());
         buttons.put(48, new ParkourButton());
 
 
-        buttons.put(20, new UHCGamemodeButton(UHCServer.ServerType.MHA));
-        buttons.put(21, new UHCGamemodeButton(UHCServer.ServerType.MUGIWARA));
-        buttons.put(29, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&cSoon...").toItemStack()));
-        buttons.put(30, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&cSoon...").toItemStack()));
+        buttons.put(21, new UHCGamemodeButton(UHCServer.ServerType.MHA));
+        buttons.put(22, new UHCGamemodeButton(UHCServer.ServerType.MUGIWARA));
+        buttons.put(32, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&6&lSoon...").toItemStack()));
+        buttons.put(30, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&6&lSoon...").toItemStack()));
 
         buttons.put(23, new CTFButton());
-        buttons.put(24, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&cSoon...").toItemStack()));
-        buttons.put(32, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&cSoon...").toItemStack()));
-        buttons.put(33, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&cSoon...").toItemStack()));
+        buttons.put(31, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&6&lSoon...").toItemStack()));
 
         return buttons;
     }
@@ -83,17 +138,17 @@ public class ServerSelectorMenu extends Menu {
     private static class TeleportToSpawnButton extends Button {
         @Override
         public ItemStack getButtonItem(Player player) {
-            return new ItemBuilder(Heads.LANTERN.toItemStack()).setName("&cRetourner au Centre").setLore(
+            return new ItemBuilder(Heads.LANTERN.toItemStack()).setName("&6&lRetourner au Centre").setLore(
                             "&fCliquez-ici pour vous téléporter au centre",
                             "&fdu lobby",
                             "",
-                            "&f&l» &cCliquez-ici pour vous téléporter")
+                            "&f&l» &eCliquez-ici pour vous téléporter")
                     .toItemStack();
         }
 
         @Override
         public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-            player.teleport(Main.getSpawn());
+            player.teleport(Main.getInstance().getSpawn());
             player.closeInventory();
         }
     }
@@ -101,18 +156,18 @@ public class ServerSelectorMenu extends Menu {
     private static class ParkourButton extends Button {
         @Override
         public ItemStack getButtonItem(Player player) {
-            return new ItemBuilder(Material.FEATHER).setName("&cCommencer le Jump").setLore(
+            return new ItemBuilder(Material.FEATHER).setName("&6&lCommencer le Jump").setLore(
                             "&fCliquez-ici pour vous téléporter au point",
                             "&fde commencement du jump",
                             "",
-                            "&f&l» &cCliquez-ici pour vous téléporter")
+                            "&f&l» &c&mCliquez-ici pour vous téléporter")
                     .toItemStack();
         }
 
         @Override
         public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-            player.teleport(Main.getJumpManager().getJumpStart());
-            player.closeInventory();
+//            player.teleport(Main.getInstance().getJumpManager().getJumpStart());
+//            player.closeInventory();
         }
     }
 
@@ -122,16 +177,16 @@ public class ServerSelectorMenu extends Menu {
         @Override
         public ItemStack getButtonItem(Player player) {
             int i = 0;
-            for (UHCServer uhcServer : BukkitAPI.getServerCache().getUhcServers().values()) {
+            for (UHCServer uhcServer : BukkitAPI.getCommonAPI().getServerCache().getUhcServers().values()) {
                 i += uhcServer.getPlayers();
             }
-            return new ItemBuilder(Heads.CHEST_MINECART.toItemStack()).setName("&cServeurs Publiques").setLore(
+            return new ItemBuilder(Heads.CHEST_MINECART.toItemStack()).setName("&6&lServeurs Publiques").setLore(
                     "&fPermet d'afficher tous les serveurs à",
                     "&fla demande",
                     "",
-                    "&8┃ &7Connectés: &f" + i,
+                    "&a&l" + i + " &8joueurs en jeu",
                     "",
-                    "&f&l» &cCliquez-ici pour y accéder"
+                    "&f&l» &eCliquez-ici pour y accéder"
             ).toItemStack();
         }
 
@@ -148,7 +203,7 @@ public class ServerSelectorMenu extends Menu {
         @Override
         public ItemStack getButtonItem(Player player) {
             int i = 0;
-            for (UHCServer uhcServer : BukkitAPI.getServerCache().getUhcServers().values()) {
+            for (UHCServer uhcServer : BukkitAPI.getCommonAPI().getServerCache().getUhcServers().values()) {
                 if (uhcServer.getType() == game) i += uhcServer.getPlayers();
             }
 
@@ -157,20 +212,23 @@ public class ServerSelectorMenu extends Menu {
             lore.add("&fdu mode de jeu &c" + game.getName());
             if (game == UHCServer.ServerType.MHA) {
                 lore.add("");
-                lore.add("&8┃ &7Créateur: &fAlexQLF");
-                lore.add("&8┃ &7Développeur: &fRhodless");
+                lore.add("&8┃ &7Créateur: &cAlexQLF");
             }
             if (game == UHCServer.ServerType.MUGIWARA) {
                 lore.add("");
-                lore.add("&8┃ &7Créateur: &fShot0w");
-                lore.add("&8┃ &7Développeur: &fRhodless");
+                lore.add("&8┃ &7Créateur: &cShot0w");
+                lore.add("&8┃ &7Développeur: &cRhodless");
             }
             lore.add("");
-            lore.add("&8┃ &7Connectés: &f" + i);
+            lore.add("&a&l" + i + " &8joueurs en jeu");
             lore.add("");
-            lore.add("&f&l» &cCliquez-ici pour y accéder");
+            lore.add("&f&l» &eCliquez-ici pour y accéder");
 
-            return new ItemBuilder(game.getDisplay()).setName("&c" + game.getName()).setLore(lore).toItemStack();
+            ItemStack is;
+            if (game == UHCServer.ServerType.MHA) is = Heads.DEKU.toItemStack();
+            else is = Heads.LUFFY.toItemStack();
+
+            return new ItemBuilder(is).setName("&6&l" + game.getName()).setLore(lore).toItemStack();
         }
 
         @Override
@@ -185,19 +243,19 @@ public class ServerSelectorMenu extends Menu {
         @Override
         public ItemStack getButtonItem(Player player) {
             int i = 0;
-            for (CTFServer ctfServer : BukkitAPI.getServerCache().getCtfServers().values()) {
+            for (CTFServer ctfServer : BukkitAPI.getCommonAPI().getServerCache().getCtfServers().values()) {
                 i += ctfServer.getPlayers();
             }
 
             i += BukkitAPI.getTotalPlayers() - BukkitAPI.getNormalPlayers();
 
-            return new ItemBuilder(Heads.SASUKE.toItemStack()).setName("&cNaruto-CTF").setLore(
+            return new ItemBuilder(Heads.SASUKE.toItemStack()).setName("&6&lNaruto-CTF").setLore(
                     "&fPermet d'accéder à la liste de serveurs",
                     "&fdu mode de jeu &cNaruto-CTF",
                     "",
-                    "&8┃ &7Connectés: &f" + i,
+                    "&a&l" + i + " &8joueurs en jeu",
                     "",
-                    "&f&l» &cCliquez-ici pour y accéder"
+                    "&f&l» &eCliquez-ici pour y accéder"
             ).toItemStack();
         }
 

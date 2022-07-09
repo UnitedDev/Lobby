@@ -1,10 +1,10 @@
 package fr.kohei.lobby.task;
 
-import fr.kohei.common.cache.ProfileData;
-import fr.kohei.lobby.Main;
 import fr.kohei.BukkitAPI;
-import fr.kohei.manager.server.LobbyServer;
-import fr.kohei.messaging.packet.LobbyUpdatePacket;
+import fr.kohei.common.cache.data.ProfileData;
+import fr.kohei.common.cache.server.impl.LobbyServer;
+import fr.kohei.common.utils.messaging.list.packets.LobbyUpdatePacket;
+import fr.kohei.lobby.Main;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -29,7 +29,7 @@ public class LobbyUpdateTask extends BukkitRunnable {
             ranks.put(profile.getRank().token(), ranks.getOrDefault(profile.getRank().token(), 0) + 1);
         }
 
-        LobbyServer lobbyServer = new LobbyServer(Bukkit.getPort(), Main.isRestricted(), Bukkit.getOnlinePlayers().size(), ranks);
+        LobbyServer lobbyServer = new LobbyServer(Bukkit.getPort(), Main.getInstance().isRestricted(), Bukkit.getOnlinePlayers().size(), ranks);
         BukkitAPI.getCommonAPI().getMessaging().sendPacket(new LobbyUpdatePacket(lobbyServer));
     }
 }

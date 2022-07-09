@@ -1,13 +1,11 @@
 package fr.kohei.lobby.task;
 
-import fr.kohei.common.cache.Rank;
+import fr.kohei.common.cache.rank.Rank;
 import fr.kohei.lobby.Main;
-import fr.kohei.lobby.lobby.LobbyPlayer;
+import fr.kohei.lobby.manager.player.LobbyPlayer;
 import fr.kohei.BukkitAPI;
 import fr.kohei.utils.ScoreboardTeam;
 import fr.kohei.utils.TimeUtil;
-import fr.kohei.utils.ChatUtil;
-import fr.kohei.utils.Title;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
@@ -27,7 +25,7 @@ public class PlayersTask extends BukkitRunnable {
         for (Player player : Bukkit.getOnlinePlayers()) {
             LobbyPlayer lobbyPlayer = new LobbyPlayer(player);
 //            if (lobbyPlayer.isInParkour()) {
-//                Title.sendActionBar(player, ChatUtil.translate("&cMeilleurs temps: &7" + getNiceDuration(Main.getPlayerCache().get(player.getUniqueId()).getParkourTime()) + " &8┃ &cTemps: &7" + getNiceDuration(lobbyPlayer.getParkour().getCurrentTime())));
+//                Title.sendActionBar(player, ChatUtil.translate("&cMeilleurs temps: &7" + getNiceDuration(Main.getInstance().getPlayerCache().get(player.getUniqueId()).getParkourTime()) + " &8┃ &cTemps: &7" + getNiceDuration(lobbyPlayer.getParkour().getCurrentTime())));
 //            }
         }
 
@@ -44,18 +42,13 @@ public class PlayersTask extends BukkitRunnable {
     public void updateTabRanks() {
         for (Player players1 : Bukkit.getOnlinePlayers()) {
             for (Player players2 : Bukkit.getOnlinePlayers()) {
-                Rank rank = BukkitAPI.getCommonAPI().getProfile(players2.getUniqueId()).getRank();
-                ScoreboardTeam team = Main.getScoreboardTeam(String.valueOf(number(rank.permissionPower())));
+                try {
+                    Rank rank = BukkitAPI.getCommonAPI().getProfile(players2.getUniqueId()).getRank();
+                    ScoreboardTeam team = Main.getInstance().getScoreboardTeam(String.valueOf(Main.RANKS_ALPHABET.get(rank.token()))  );
 
-                ((CraftPlayer) players1).getHandle().playerConnection.sendPacket(team.addOrRemovePlayer(3, players2.getName()));
-
+                    ((CraftPlayer) players1).getHandle().playerConnection.sendPacket(team.addOrRemovePlayer(3, players2.getName()));
+                } catch (Exception ignored) {}
             }
         }
     }
-
-    public static int number(int power) {
-        return (int) ((1 / (power == 0 ? 0.00001 : power)) * 100000);
-    }
-
-
 }

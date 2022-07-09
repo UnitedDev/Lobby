@@ -6,13 +6,14 @@ import de.dytanic.cloudnet.driver.service.ServiceConfiguration;
 import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import fr.kohei.BukkitAPI;
-import fr.kohei.common.cache.ProfileData;
-import fr.kohei.common.cache.Rank;
-import fr.kohei.lobby.frame.Frame;
-import fr.kohei.lobby.frame.ScoreboardAdapter;
-import fr.kohei.lobby.manager.BukkitManager;
-import fr.kohei.lobby.manager.CosmeticManager;
-import fr.kohei.lobby.manager.JumpManager;
+import fr.kohei.common.cache.data.ProfileData;
+import fr.kohei.common.cache.rank.Rank;
+import fr.kohei.lobby.manager.*;
+import fr.kohei.lobby.utils.frame.Frame;
+import fr.kohei.lobby.utils.frame.ScoreboardAdapter;
+import fr.kohei.lobby.manager.packets.PlayerChatPacket;
+import fr.kohei.lobby.manager.packets.PlayerChatSubscriber;
+import fr.kohei.lobby.task.BoxTask;
 import fr.kohei.lobby.task.LobbyUpdateTask;
 import fr.kohei.lobby.task.PlayersTask;
 import fr.kohei.utils.ChatUtil;
@@ -27,6 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @Getter
@@ -34,58 +36,71 @@ public class Main extends JavaPlugin {
 
     @Getter
     private static Main instance;
-    @Getter
-    private static BukkitManager bukkitManager;
-    @Getter
-    private static Location spawn;
-    @Getter
-    private static List<ScoreboardTeam> teams;
-    @Getter
-    private static JumpManager jumpManager;
-    @Getter
-    private static CosmeticManager cosmeticManager;
-    @Getter
-    private static boolean restricted;
+
+    private Location spawn;
+    private List<ScoreboardTeam> teams;
+
+    private BukkitManager bukkitManager;
+    private JumpManager jumpManager;
+    private CosmeticManager cosmeticManager;
+    private AnnouncementsManager announcementsManager;
+    private NPCManager npcManager;
+
+    private boolean restricted;
+    private BoxTask boxTask;
 
     @Override
     public void onEnable() {
         saveConfig();
         instance = this;
 
-        bukkitManager = new BukkitManager(this);
-        spawn = new Location(Bukkit.getWorld("world"), 390.5, 89, 209.5, -90, 0);
-        teams = new ArrayList<>();
-        jumpManager = new JumpManager(this);
-        cosmeticManager = new CosmeticManager(this);
-        restricted = getConfig().getBoolean("restricted");
+        this.restricted = getConfig().getBoolean("restricted");
+        this.teams = new ArrayList<>();
+        this.spawn = new Location(Bukkit.getWorld("world"), -20.5, 45, 0.5, -90, 0);
+
+        this.bukkitManager = new BukkitManager(this);
+        this.jumpManager = new JumpManager(this);
+        this.cosmeticManager = new CosmeticManager(this);
+        this.announcementsManager = new AnnouncementsManager(this);
+        this.npcManager = new NPCManager(this);
 
         new Frame(this, new ScoreboardAdapter());
 
-        spawn.getWorld().setGameRuleValue("doDaylightCycle", "false");
-        spawn.getWorld().setGameRuleValue("randomTickSpeed", "0");
+        this.spawn.getWorld().setGameRuleValue("doDaylightCycle", "false");
+        this.spawn.getWorld().setGameRuleValue("randomTickSpeed", "0");
 
+        BukkitAPI.getCommonAPI().getMessaging().registerAdapter(PlayerChatPacket.class, new PlayerChatSubscriber());
+
+        int i = 0;
         for (Rank value : BukkitAPI.getCommonAPI().getRanks()) {
-
-            String position = String.valueOf(PlayersTask.number(value.permissionPower()));
             String prefix = ChatUtil.translate(value.getTabPrefix() + (value.token().equalsIgnoreCase("default") ? "" : " "));
-            teams.add(new ScoreboardTeam(position, prefix));
+
+            char character = alphabet[i++];
+            RANKS_ALPHABET.put(value.token(), character);
+            teams.add(new ScoreboardTeam(String.valueOf(character), prefix));
         }
 
         new LobbyUpdateTask(this).runTaskTimer(this, 0, 5 * 20);
         new PlayersTask(this).runTaskTimer(this, 0, 20);
+
+        this.boxTask = new BoxTask(this);
+        this.boxTask.runTaskTimer(this, 0, 5);
     }
 
-    public static ScoreboardTeam getScoreboardTeam(String name) {
+    public static final HashMap<String, Character> RANKS_ALPHABET = new HashMap<>();
+    public static char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().toCharArray();
+
+    public ScoreboardTeam getScoreboardTeam(String name) {
         return teams.stream().filter(t -> t.getName().equals(name)).findFirst().orElse(null);
     }
 
-    public static ServiceInfoSnapshot getFactory(int port) {
+    public ServiceInfoSnapshot getFactory(int port) {
         return CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServices().stream()
                 .filter(service -> service.getAddress().getPort() == port)
                 .findFirst().orElse(null);
     }
 
-    public static void createUHC(Player player, String name) {
+    public void createUHC(Player player, String name) {
         ProfileData data = BukkitAPI.getCommonAPI().getProfile(player.getUniqueId());
 
         if (data.getHosts() == 0 && data.getHosts() != -1L) {
@@ -98,6 +113,10 @@ public class Main extends JavaPlugin {
         CloudServiceFactory cloudService = CloudNetDriver.getInstance().getCloudServiceFactory();
         ServiceTask serviceTask = CloudNetDriver.getInstance().getServiceTaskProvider().getServiceTask(name);
 
+        if (serviceTask == null) {
+            player.sendMessage(ChatUtil.prefix("&cImpossible de lancer l'uhc. Erreur 101."));
+            return;
+        }
         ServiceConfiguration config = ServiceConfiguration.builder(serviceTask).build();
         ServiceInfoSnapshot service = cloudService.createCloudService(config);
 
@@ -116,8 +135,7 @@ public class Main extends JavaPlugin {
 
             @Override
             public void run() {
-
-                if (BukkitAPI.getServerCache().getUhcServers().containsKey(port)) {
+                if (BukkitAPI.getCommonAPI().getServerCache().getUhcServers().containsKey(port)) {
                     player.sendMessage(ChatUtil.prefix("&cVotre serveur a été créé avec succès."));
                     BukkitAPI.sendToServer(player, service.getName());
                     cancel();
@@ -125,7 +143,6 @@ public class Main extends JavaPlugin {
                 }
 
                 Title.sendTitle(player, 0, 3, 0, " ", Main.LOADING.get(currentLoad));
-
                 if (currentLoad + 1 >= Main.LOADING.size()) {
                     currentLoad = 0;
                     return;
@@ -152,5 +169,8 @@ public class Main extends JavaPlugin {
             "▂▃▄▅▆▇▉▉▇▆▅▄▃▂▁▁"
     );
 
+    public void sendLinkTitle(Player player) {
+        Title.sendTitle(player, 0, 40, 0, "&c✗ &fCompte &anon lié&f &c✗", " ");
+    }
 
 }

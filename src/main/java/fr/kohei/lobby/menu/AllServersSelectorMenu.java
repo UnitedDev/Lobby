@@ -1,8 +1,8 @@
 package fr.kohei.lobby.menu;
 
-import fr.kohei.lobby.Main;
 import fr.kohei.BukkitAPI;
-import fr.kohei.manager.server.UHCServer;
+import fr.kohei.common.cache.server.impl.UHCServer;
+import fr.kohei.lobby.Main;
 import fr.kohei.menu.Button;
 import fr.kohei.menu.Menu;
 import fr.kohei.menu.pagination.PaginatedMenu;
@@ -51,7 +51,7 @@ public class AllServersSelectorMenu extends PaginatedMenu {
     public Map<Integer, Button> getAllPagesButtons(Player player) {
         Map<Integer, Button> buttons = new HashMap<>();
 
-        BukkitAPI.getServerCache().getUhcServers().values().forEach(uhcServer -> {
+        BukkitAPI.getCommonAPI().getServerCache().getUhcServers().values().forEach(uhcServer -> {
 
             buttons.put(buttons.size(), new UHCButton(uhcServer));
         });
@@ -70,7 +70,7 @@ public class AllServersSelectorMenu extends PaginatedMenu {
 
         @Override
         public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-            BukkitAPI.sendToServer(player, Main.getFactory(uhcServer.getPort()).getName());
+            player.chat("/joinqueue uhc-" + uhcServer.getPort());
         }
 
         @Override
@@ -91,20 +91,20 @@ public class AllServersSelectorMenu extends PaginatedMenu {
         }
 
         List<String> lore = new ArrayList<>();
-        lore.add("&7" + Main.getFactory(server.getPort()).getName());
+        lore.add("&7" + Main.getInstance().getFactory(server.getPort()).getName());
         lore.add(" ");
-        lore.add("&f➥ &c&lHost");
+        lore.add("&f➥ &6&lHost");
         lore.add(" &fHost: &a" + server.getHost());
         lore.add(" &fJoueurs: &e" + server.getPlayers() + "&8/&e" + server.getSlots());
         lore.add(" &fPhase: " + server.getStatus().getName());
         lore.add(" ");
-        lore.add("&f➥ &c&lInfos");
+        lore.add("&f➥ &6&lInfos");
         lore.add(" &fTeams: &a" + server.getTeamSize() + "vs" + server.getTeamSize());
         lore.add(" &fTaille: &e± " + server.getBorderStartSize());
         lore.add(" &fBordure: &c" + TimeUtil.niceTime(server.getBorderTimer()));
         lore.add(" &fPvP: &a" + TimeUtil.niceTime(server.getPvpTimer()));
         lore.add(" ");
-        lore.add("&f➥ &c&lScenarios");
+        lore.add("&f➥ &6&lScenarios");
         if (server.getEnabledScenarios().isEmpty()) {
             lore.add(" &cAucun");
         } else {
@@ -121,18 +121,18 @@ public class AllServersSelectorMenu extends PaginatedMenu {
             }
         }
         lore.add(" ");
-        lore.add("&f&l» &cCliquez-ici pour vous connecter");
-        return new ItemBuilder(itemStack).setName("&c&l" + server.getCustomName()).setLore(lore);
+        lore.add("&f&l» &eCliquez-ici pour vous connecter");
+        return new ItemBuilder(itemStack).setName("&6&l" + server.getCustomName()).setLore(lore);
     }
 
     private class CreateServerButton extends Button {
         @Override
         public ItemStack getButtonItem(Player player) {
-            return new ItemBuilder(Heads.COMMAND_BLOCK.toItemStack()).setName("&cCréer un serveur").setLore(
+            return new ItemBuilder(Heads.COMMAND_BLOCK.toItemStack()).setName("&a&lCréer un serveur").setLore(
                     "&fPermet de créer un serveur uhc dans",
                     "&flequel vous serez l'hôte principal",
                     "",
-                    "&f&l» &cCliquez-ici pour confirmer"
+                    "&f&l» &eCliquez-ici pour confirmer"
             ).toItemStack();
         }
 

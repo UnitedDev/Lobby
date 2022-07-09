@@ -1,4 +1,4 @@
-package fr.kohei.lobby.lobby;
+package fr.kohei.lobby.manager.parkour;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

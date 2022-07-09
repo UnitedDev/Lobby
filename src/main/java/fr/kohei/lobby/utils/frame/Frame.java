@@ -1,4 +1,4 @@
-package fr.kohei.lobby.frame;
+package fr.kohei.lobby.utils.frame;
 
 import fr.kohei.utils.ChatUtil;
 import org.bukkit.ChatColor;
@@ -35,37 +35,39 @@ public class Frame
             else titleIndex++;
 
             for (Player player : this.plugin.getServer().getOnlinePlayers()) {
-                FrameBoard board = this.boards.get(player.getUniqueId());
-                if (board == null)
-                    continue;
-                Scoreboard scoreboard = board.getScoreboard();
-                Objective objective = board.getObjective();
-                String title = ChatUtil.translate(this.title.get(titleIndex));
-                if (!objective.getDisplayName().equals(title))
-                    objective.setDisplayName(title);
-                List<String> newLines = this.adapter.getLines(player);
-                if (newLines == null || newLines.isEmpty()) {
-                    board.getEntries().forEach(FrameBoardEntry::remove);
-                    board.getEntries().clear();
-                } else {
-                    Collections.reverse(newLines);
-                    if (board.getEntries().size() > newLines.size())
-                        for (int j = newLines.size(); j < board.getEntries().size(); j++) {
-                            FrameBoardEntry entry = board.getEntryAtPosition(j);
-                            if (entry != null)
-                                entry.remove();
+                try {
+                    FrameBoard board = this.boards.get(player.getUniqueId());
+                    if (board == null)
+                        continue;
+                    Scoreboard scoreboard = board.getScoreboard();
+                    Objective objective = board.getObjective();
+                    String title = ChatUtil.translate(this.title.get(titleIndex));
+                    if (!objective.getDisplayName().equals(title))
+                        objective.setDisplayName(title);
+                    List<String> newLines = this.adapter.getLines(player);
+                    if (newLines == null || newLines.isEmpty()) {
+                        board.getEntries().forEach(FrameBoardEntry::remove);
+                        board.getEntries().clear();
+                    } else {
+                        Collections.reverse(newLines);
+                        if (board.getEntries().size() > newLines.size())
+                            for (int j = newLines.size(); j < board.getEntries().size(); j++) {
+                                FrameBoardEntry entry = board.getEntryAtPosition(j);
+                                if (entry != null)
+                                    entry.remove();
+                            }
+                        for (int i = 0; i < newLines.size(); i++) {
+                            FrameBoardEntry entry = board.getEntryAtPosition(i);
+                            String line = ChatColor.translateAlternateColorCodes('&', newLines.get(i));
+                            if (entry == null)
+                                entry = new FrameBoardEntry(board, line);
+                            entry.setText(line);
+                            entry.setup();
+                            entry.send(i);
                         }
-                    for (int i = 0; i < newLines.size(); i++) {
-                        FrameBoardEntry entry = board.getEntryAtPosition(i);
-                        String line = ChatColor.translateAlternateColorCodes('&', newLines.get(i));
-                        if (entry == null)
-                            entry = new FrameBoardEntry(board, line);
-                        entry.setText(line);
-                        entry.setup();
-                        entry.send(i);
                     }
-                }
-                player.setScoreboard(scoreboard);
+                    player.setScoreboard(scoreboard);
+                } catch (Exception ignored) {}
             }
             if (((ScoreboardAdapter) this.getAdapter()).index  + 1 >= ((ScoreboardAdapter) this.getAdapter()).ip.size()) ((ScoreboardAdapter) this.getAdapter()).index  = 0;
             else ((ScoreboardAdapter) this.getAdapter()).index ++;
@@ -147,38 +149,38 @@ public class Frame
             "&6&LKOHEI",
             "&6&LKOHEI",
             "&6&LKOHEI",
-            "&c&lK&6&LOHEI",
-            "&c&lKO&6&LHEI",
-            "&c&lKOH&6&LEI",
-            "&c&lKOHE&6&LI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&c&lKOHEI",
-            "&6&lK&c&lOHEI",
-            "&6&lKO&c&lHEI",
-            "&6&lKOH&c&lEI",
-            "&6&lKOHE&c&lI",
+            "&6&lK&6&LOHEI",
+            "&6&lKO&6&LHEI",
+            "&6&lKOH&6&LEI",
+            "&6&lKOHE&6&LI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lKOHEI",
+            "&6&lK&6&lOHEI",
+            "&6&lKO&6&lHEI",
+            "&6&lKOH&6&lEI",
+            "&6&lKOHE&6&lI",
             "&6&lKOHEI"
     );
     int titleIndex = 0;

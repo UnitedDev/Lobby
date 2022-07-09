@@ -1,8 +1,8 @@
 package fr.kohei.lobby.menu;
 
-import fr.kohei.lobby.Main;
 import fr.kohei.BukkitAPI;
-import fr.kohei.manager.server.UHCServer;
+import fr.kohei.common.cache.server.impl.UHCServer;
+import fr.kohei.lobby.Main;
 import fr.kohei.menu.Button;
 import fr.kohei.menu.Menu;
 import fr.kohei.menu.pagination.PaginatedMenu;
@@ -37,7 +37,7 @@ public class MyServersMenu extends PaginatedMenu {
     public Map<Integer, Button> getAllPagesButtons(Player player) {
         Map<Integer, Button> buttons = new HashMap<>();
 
-        for (UHCServer uhcServer : BukkitAPI.getServerCache().getUhcServers().values()) {
+        for (UHCServer uhcServer : BukkitAPI.getCommonAPI().getServerCache().getUhcServers().values()) {
             if (uhcServer.getHost().equalsIgnoreCase(player.getName()))
                 buttons.put(buttons.size(), new UHCButton(uhcServer));
         }
@@ -56,7 +56,7 @@ public class MyServersMenu extends PaginatedMenu {
 
         @Override
         public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-            BukkitAPI.sendToServer(player, Main.getFactory(uhcServer.getPort()).getName());
+            BukkitAPI.sendToServer(player, Main.getInstance().getFactory(uhcServer.getPort()).getName());
         }
 
         @Override

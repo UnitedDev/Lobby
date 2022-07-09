@@ -1,8 +1,8 @@
 package fr.kohei.lobby.menu;
 
-import fr.kohei.lobby.Main;
 import fr.kohei.BukkitAPI;
-import fr.kohei.manager.server.UHCServer;
+import fr.kohei.common.cache.server.impl.UHCServer;
+import fr.kohei.lobby.Main;
 import fr.kohei.menu.Button;
 import fr.kohei.menu.Menu;
 import fr.kohei.menu.pagination.ConfirmationMenu;
@@ -51,8 +51,8 @@ public class UHCGamemodeMenu extends PaginatedMenu {
     public Map<Integer, Button> getAllPagesButtons(Player player) {
         Map<Integer, Button> buttons = new HashMap<>();
 
-        for (UHCServer uhcServer : BukkitAPI.getServerCache().getUhcServers().values()) {
-            if(uhcServer.getType() != game) continue;
+        for (UHCServer uhcServer : BukkitAPI.getCommonAPI().getServerCache().getUhcServers().values()) {
+            if (uhcServer.getType() != game) continue;
             buttons.put(buttons.size(), new UHCButton(uhcServer));
         }
 
@@ -70,7 +70,7 @@ public class UHCGamemodeMenu extends PaginatedMenu {
 
         @Override
         public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-            BukkitAPI.sendToServer(player, Main.getFactory(uhcServer.getPort()).getName());
+            player.chat("/joinqueue uhc-" + uhcServer.getPort());
         }
 
         @Override
@@ -88,18 +88,18 @@ public class UHCGamemodeMenu extends PaginatedMenu {
         @Override
         public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
             new ConfirmationMenu(() -> {
-                Main.createUHC(player, game.getName());
+                Main.getInstance().createUHC(player, game.getName());
                 player.closeInventory();
-            }, getCreateServerGameItem(game), new UHCGamemodeMenu(oldMenu, game)).openMenu(player);
+            }, getCreateServerGameItem(game), new  UHCGamemodeMenu(oldMenu, game)).openMenu(player);
         }
     }
 
     public static ItemStack getCreateServerGameItem(UHCServer.ServerType game) {
-        return new ItemBuilder(Heads.COMMAND_BLOCK.toItemStack()).setName("&cCréer un serveur").setLore(
+        return new ItemBuilder(Heads.COMMAND_BLOCK.toItemStack()).setName("&a&lCréer un serveur").setLore(
                 "&fPermet de créer un serveur uhc avec le",
                 "&fmode &c" + game.getName(),
                 "",
-                "&f&l» &cCliquez-ici pour confirmer"
+                "&f&l» &eCliquez-ici pour confirmer"
         ).toItemStack();
     }
 

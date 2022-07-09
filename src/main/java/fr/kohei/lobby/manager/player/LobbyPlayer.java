@@ -1,14 +1,16 @@
-package fr.kohei.lobby.lobby;
+package fr.kohei.lobby.manager.player;
 
-import fr.kohei.common.cache.ProfileData;
+import fr.kohei.common.cache.data.ProfileData;
 import fr.kohei.lobby.Main;
-import fr.kohei.lobby.items.LobbyItems;
+import fr.kohei.lobby.manager.items.LobbyItems;
 import fr.kohei.BukkitAPI;
+import fr.kohei.lobby.manager.parkour.Parkour;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -30,7 +32,7 @@ public class LobbyPlayer {
         player.setHealth(20);
         player.setFoodLevel(20);
         player.getActivePotionEffects().clear();
-        player.setGameMode(GameMode.ADVENTURE);
+        player.setGameMode(GameMode.SURVIVAL);
 
         ProfileData profile = BukkitAPI.getCommonAPI().getProfile(player.getUniqueId());
 
@@ -49,11 +51,17 @@ public class LobbyPlayer {
         }
         player.getInventory().setItem(7, LobbyItems.COSMETICS.toItemStack());
         player.getInventory().setItem(8, LobbyItems.LOBBY_SELECTOR.toItemStack());
+
+        if (profile.getBox() <= 0) return;
+
+        ItemStack box = LobbyItems.BOX.toItemStack();
+        box.setAmount(profile.getBox());
+        player.getInventory().setItem(2, box);
     }
 
     public void leaveParkour() {
         setParkour(null);
-        player.teleport(Main.getJumpManager().getJumpStart());
+        player.teleport(Main.getInstance().getJumpManager().getJumpStart());
         refreshHotbar();
 
         ProfileData profile = BukkitAPI.getCommonAPI().getProfile(player.getUniqueId());
@@ -80,7 +88,7 @@ public class LobbyPlayer {
     }
 
     public void teleportToSpawn() {
-        player.teleport(Main.getSpawn());
+        player.teleport(Main.getInstance().getSpawn());
     }
 
     public void updateVisibility() {

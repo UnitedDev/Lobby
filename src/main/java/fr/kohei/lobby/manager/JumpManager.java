@@ -43,54 +43,54 @@ public class JumpManager {
 //            leaderboard.put(name, value);
 //        }
 
-        List<String> str = new ArrayList<>(this.leaderboard.keySet());
-        str.sort(Comparator.comparing(this.leaderboard::get));
-
-        Bukkit.getScheduler().runTaskLater(main, () -> {
-            double x = 0.5;
-            double y = 97;
-            double z = -34.5;
-            int place = 1;
-
-            World world = Bukkit.getWorld("world");
-            ArmorStand title = (ArmorStand) Bukkit.getWorld("world").spawnEntity(new Location(world, x, y, z), EntityType.ARMOR_STAND);
-            title.setVisible(false);
-            title.setCustomName("§cClassement §8┃ §fParkour");
-            title.setGravity(false);
-            title.setCustomNameVisible(true);
-            this.armorStands.add(title);
-
-            y -= 0.27;
-
-            ArmorStand line = (ArmorStand) Bukkit.getWorld("world").spawnEntity(new Location(world, x, y, z), EntityType.ARMOR_STAND);
-            line.setVisible(false);
-            line.setCustomName(ChatUtil.translate("&7&m--------------------"));
-            line.setGravity(false);
-            line.setCustomNameVisible(true);
-            this.armorStands.add(line);
-
-            for (String name : str) {
-                Long value = leaderboard.get(name);
-                y -= 0.27;
-
-                ArmorStand board = (ArmorStand) Bukkit.getWorld("world").spawnEntity(new Location(world, x, y, z), EntityType.ARMOR_STAND);
-                board.setVisible(false);
-                board.setCustomName(ChatUtil.translate("&c" + place + " &8» &c" + name + "&8: &7" + TimeUtil.niceTime(value)));
-                board.setGravity(false);
-                board.setCustomNameVisible(true);
-                this.armorStands.add(board);
-                place++;
-            }
-
-            y -= 0.27;
-
-            ArmorStand line2 = (ArmorStand) Bukkit.getWorld("world").spawnEntity(new Location(world, x, y, z), EntityType.ARMOR_STAND);
-            line2.setVisible(false);
-            line2.setCustomName(ChatUtil.translate("&7&m--------------------"));
-            line2.setGravity(false);
-            line2.setCustomNameVisible(true);
-            this.armorStands.add(line2);
-        }, 10 * 20);
+//        List<String> str = new ArrayList<>(this.leaderboard.keySet());
+//        str.sort(Comparator.comparing(this.leaderboard::get));
+//
+//        Bukkit.getScheduler().runTaskLater(main, () -> {
+//            double x = 0.5;
+//            double y = 97;
+//            double z = -34.5;
+//            int place = 1;
+//
+//            World world = Bukkit.getWorld("world");
+//            ArmorStand title = (ArmorStand) Bukkit.getWorld("world").spawnEntity(new Location(world, x, y, z), EntityType.ARMOR_STAND);
+//            title.setVisible(false);
+//            title.setCustomName("§cClassement §8┃ §fParkour");
+//            title.setGravity(false);
+//            title.setCustomNameVisible(true);
+//            this.armorStands.add(title);
+//
+//            y -= 0.27;
+//
+//            ArmorStand line = (ArmorStand) Bukkit.getWorld("world").spawnEntity(new Location(world, x, y, z), EntityType.ARMOR_STAND);
+//            line.setVisible(false);
+//            line.setCustomName(ChatUtil.translate("&7&m--------------------"));
+//            line.setGravity(false);
+//            line.setCustomNameVisible(true);
+//            this.armorStands.add(line);
+//
+//            for (String name : str) {
+//                Long value = leaderboard.get(name);
+//                y -= 0.27;
+//
+//                ArmorStand board = (ArmorStand) Bukkit.getWorld("world").spawnEntity(new Location(world, x, y, z), EntityType.ARMOR_STAND);
+//                board.setVisible(false);
+//                board.setCustomName(ChatUtil.translate("&c" + place + " &8» &c" + name + "&8: &7" + TimeUtil.niceTime(value)));
+//                board.setGravity(false);
+//                board.setCustomNameVisible(true);
+//                this.armorStands.add(board);
+//                place++;
+//            }
+//
+//            y -= 0.27;
+//
+//            ArmorStand line2 = (ArmorStand) Bukkit.getWorld("world").spawnEntity(new Location(world, x, y, z), EntityType.ARMOR_STAND);
+//            line2.setVisible(false);
+//            line2.setCustomName(ChatUtil.translate("&7&m--------------------"));
+//            line2.setGravity(false);
+//            line2.setCustomNameVisible(true);
+//            this.armorStands.add(line2);
+//        }, 10 * 20);
     }
 
     public List<Location> getCheckpoints() {

@@ -1,6 +1,6 @@
 package fr.kohei.lobby.menu;
 
-import fr.kohei.common.cache.ProfileData;
+import fr.kohei.common.cache.data.ProfileData;
 import fr.kohei.BukkitAPI;
 import fr.kohei.menu.Button;
 import fr.kohei.menu.Menu;
@@ -48,7 +48,7 @@ public class IgnoreMenu extends PaginatedMenu {
     private class AddIgnoreButton extends Button {
         @Override
         public ItemStack getButtonItem(Player player) {
-            return new ItemBuilder(Heads.LIME_PLUS.toItemStack()).setName("&cIgnorer un joueur").setLore(
+            return new ItemBuilder(Heads.LIME_PLUS.toItemStack()).setName("&6&lIgnorer un joueur").setLore(
                     "&fPour ignorer un joueur utilisez la commande",
                     "&f/&4i &cadd &f<joueur>"
             ).toItemStack();
@@ -62,7 +62,7 @@ public class IgnoreMenu extends PaginatedMenu {
 
         @Override
         public ItemStack getButtonItem(Player player) {
-            return new ItemBuilder(Material.SKULL_ITEM).setDurability(SkullType.PLAYER.ordinal()).setSkullOwner(ignore).setName("&c" + ignore).setLore(
+            return new ItemBuilder(Material.SKULL_ITEM).setDurability(SkullType.PLAYER.ordinal()).setSkullOwner(ignore).setName("&6&l" + ignore).setLore(
                     "&fCliquez-ici pour supprimer &c" + ignore,
                     "&fde votre de joueurs ignorés"
             ).toItemStack();

@@ -1,12 +1,12 @@
 package fr.kohei.lobby.menu;
 
+import fr.kohei.common.cache.server.impl.UHCServer;
 import fr.kohei.lobby.Main;
-import fr.kohei.BukkitAPI;
-import fr.kohei.manager.server.UHCServer;
 import fr.kohei.menu.Button;
 import fr.kohei.menu.Menu;
 import fr.kohei.menu.pagination.ConfirmationMenu;
 import fr.kohei.menu.pagination.PaginatedMenu;
+import fr.kohei.utils.Heads;
 import fr.kohei.utils.ItemBuilder;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.entity.Player;
@@ -48,16 +48,20 @@ public class ChooseGameMenu extends PaginatedMenu {
 
         @Override
         public ItemStack getButtonItem(Player player) {
-            return new ItemBuilder(game.getDisplay()).setName("&c" + game.getName()).setLore(
+            ItemStack is;
+            if (game == UHCServer.ServerType.MHA) is = Heads.DEKU.toItemStack();
+            else is = Heads.LUFFY.toItemStack();
+
+            return new ItemBuilder(is).setName("&6&l" + game.getName()).setLore(
                     "",
-                    "&f&l» &cCliquez-ici pour commander"
+                    "&f&l» &eCliquez-ici pour commander"
             ).toItemStack();
         }
 
         @Override
         public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
             new ConfirmationMenu(() -> {
-                Main.createUHC(player, game.getName());
+                Main.getInstance().createUHC(player, game.getName());
                 player.closeInventory();
             }, getButtonItem(player), new ChooseGameMenu(oldMenu)).openMenu(player);
         }

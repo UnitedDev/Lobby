@@ -7,9 +7,9 @@ import de.dytanic.cloudnet.driver.service.ServiceInfoSnapshot;
 import de.dytanic.cloudnet.driver.service.ServiceLifeCycle;
 import de.dytanic.cloudnet.driver.service.ServiceTask;
 import fr.kohei.BukkitAPI;
-import fr.kohei.common.cache.ProfileData;
-import fr.kohei.common.cache.Rank;
-import fr.kohei.manager.server.LobbyServer;
+import fr.kohei.common.cache.data.ProfileData;
+import fr.kohei.common.cache.rank.Rank;
+import fr.kohei.common.cache.server.impl.LobbyServer;
 import fr.kohei.menu.Button;
 import fr.kohei.menu.Menu;
 import fr.kohei.menu.pagination.ConfirmationMenu;
@@ -38,6 +38,11 @@ public class LobbySelectorMenu extends PaginatedMenu {
     }
 
     @Override
+    public int getGlassColor() {
+        return 9;
+    }
+
+    @Override
     public Menu backButton() {
         return oldMenu;
     }
@@ -51,13 +56,13 @@ public class LobbySelectorMenu extends PaginatedMenu {
             @Override
             public ItemStack getButtonItem(Player player) {
                 if(restricted) {
-                    return new ItemBuilder(Heads.SETTINGS.toItemStack()).setName("&cRestricted Hubs &8(&aSelectionné&8)").toItemStack();
+                    return new ItemBuilder(Heads.SETTINGS.toItemStack()).setName("&6&lRestricted Hubs &8(&aSelectionné&8)").toItemStack();
                 }
-                return new ItemBuilder(Heads.SETTINGS.toItemStack()).setName("&cRestricted Hubs").setLore(
+                return new ItemBuilder(Heads.SETTINGS.toItemStack()).setName("&6&lRestricted Hubs").setLore(
                         "&fPermet de voir la liste des joueurs réservés",
                         "&faux gradés.",
                         "",
-                        "&f&l» &cCliquez-ici pour y accéder"
+                        "&f&l» &eCliquez-ici pour y accéder"
                 ).toItemStack();
             }
 
@@ -71,10 +76,10 @@ public class LobbySelectorMenu extends PaginatedMenu {
             buttons.put(18, new Button() {
                 @Override
                 public ItemStack getButtonItem(Player player) {
-                    return new ItemBuilder(Heads.COMMAND_BLOCK.toItemStack()).setName("&aCréer un lobby").setLore(
+                    return new ItemBuilder(Heads.COMMAND_BLOCK.toItemStack()).setName("&a&lCréer un lobby").setLore(
                             "&c⚠ &7Réservée aux administrateurs",
                             "",
-                            "&f&l» &cCliquez-ici pour confirmer"
+                            "&f&l» &eCliquez-ici pour confirmer"
                     ).toItemStack();
                 }
 
@@ -113,7 +118,7 @@ public class LobbySelectorMenu extends PaginatedMenu {
         Map<Integer, Button> buttons = new HashMap<>();
 
         int i = 0;
-        List<LobbyServer> servers = new ArrayList<>(BukkitAPI.getServerCache().getLobbyServers().values());
+        List<LobbyServer> servers = new ArrayList<>(BukkitAPI.getCommonAPI().getServerCache().getLobbyServers().values());
         servers.sort(Comparator.comparing(LobbyServer::getPort));
 
         for (ServiceInfoSnapshot cloudService : CloudNetDriver.getInstance().getCloudServiceProvider().getCloudServices()) {
@@ -137,7 +142,7 @@ public class LobbySelectorMenu extends PaginatedMenu {
     }
 
     public LobbyServer getLobbyFromPort(int port) {
-        return BukkitAPI.getServerCache().getLobbyServers().get(port);
+        return BukkitAPI.getCommonAPI().getServerCache().getLobbyServers().get(port);
     }
 
     @Override
@@ -163,20 +168,20 @@ public class LobbySelectorMenu extends PaginatedMenu {
             }
 
             if (server == null) {
-                return new ItemBuilder(Heads.BALLOON_RED.toItemStack()).setName("&c" + serverSnapshot.getName()).setLore(
+                return new ItemBuilder(Heads.BALLOON_RED.toItemStack()).setName("&6&l" + serverSnapshot.getName()).setLore(
                         "",
                         "&cServeur en cours de création"
                 ).toItemStack();
             }
 
-            server.getRanks().forEach((s, integer) -> map.put(BukkitAPI.getCommonAPI().getRank(s).get(), integer));
+            server.getRanks().forEach((s, integer) -> map.put(BukkitAPI.getCommonAPI().getRank(s), integer));
 
             List<Rank> ranks = new ArrayList<>(map.keySet());
 
             ranks = ranks.stream().sorted(Comparator.comparing(Rank::permissionPower).reversed()).collect(Collectors.toList());
 
             lore.add(" ");
-            lore.add("&8┃ &7Connectés: &f" + server.getPlayers());
+            lore.add("&a&l" + server.getPlayers() + " &8joueurs en jeu");
             if (!ranks.isEmpty()) {
                 lore.add(" ");
             }
@@ -186,10 +191,10 @@ public class LobbySelectorMenu extends PaginatedMenu {
             if (Bukkit.getPort() == server.getPort()) {
                 lore.add("&cVous êtes déjà connecté sur ce lobby");
             } else {
-                lore.add("&f&l» &cCliquez-ici pour changer de lobby");
+                lore.add("&f&l» &eCliquez-ici pour changer de lobby");
             }
 
-            return new ItemBuilder(head.toItemStack()).setAmount(server.getPlayers()).setName("&c" + serverSnapshot.getName()).setLore(lore).toItemStack();
+            return new ItemBuilder(head.toItemStack()).setAmount(server.getPlayers()).setName("&6&l" + serverSnapshot.getName()).setLore(lore).toItemStack();
         }
 
         @Override

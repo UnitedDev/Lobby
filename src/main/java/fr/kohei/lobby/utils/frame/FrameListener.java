@@ -1,4 +1,4 @@
-package fr.kohei.lobby.frame;
+package fr.kohei.lobby.utils.frame;
 
 import fr.kohei.lobby.Main;
 import org.bukkit.Bukkit;

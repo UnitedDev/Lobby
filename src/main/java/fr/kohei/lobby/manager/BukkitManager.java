@@ -1,10 +1,9 @@
 package fr.kohei.lobby.manager;
 
 import fr.kohei.lobby.Main;
-import fr.kohei.lobby.commands.JumpCommands;
+import fr.kohei.lobby.manager.jump.JumpCommands;
 import fr.kohei.lobby.listeners.PlayerListeners;
 import fr.kohei.BukkitAPI;
-import fr.kohei.utils.TimeUtil;
 import org.bukkit.plugin.PluginManager;
 
 public class BukkitManager {
@@ -19,7 +18,7 @@ public class BukkitManager {
     }
 
     public void registerListeners() {
-        PluginManager pluginManager = main.getServer().getPluginManager();
+        PluginManager pluginManager = Main.getInstance().getServer().getPluginManager();
 
         pluginManager.registerEvents(new PlayerListeners(), main);
     }

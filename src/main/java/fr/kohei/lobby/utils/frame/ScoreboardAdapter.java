@@ -1,11 +1,11 @@
-package fr.kohei.lobby.frame;
+package fr.kohei.lobby.utils.frame;
 
-import fr.kohei.common.cache.Division;
-import fr.kohei.common.cache.ProfileData;
-import fr.kohei.lobby.Main;
-import fr.kohei.lobby.task.ProgressBar;
-import fr.kohei.lobby.lobby.LobbyPlayer;
 import fr.kohei.BukkitAPI;
+import fr.kohei.common.cache.data.Division;
+import fr.kohei.common.cache.data.ProfileData;
+import fr.kohei.lobby.Main;
+import fr.kohei.lobby.manager.player.LobbyPlayer;
+import fr.kohei.lobby.utils.ProgressBar;
 import fr.kohei.utils.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -59,7 +59,7 @@ public class ScoreboardAdapter implements FrameAdapter {
 
         toReturn.add("");
         if (lobbyPlayer.isInParkour()) {
-//            toReturn.add(" &8┃ &fMeilleur Temps: &a" + TimeUtil.niceTime(Main.getPlayerCache().get(player.getUniqueId()).getParkourTime()));
+//            toReturn.add(" &8┃ &fMeilleur Temps: &a" + TimeUtil.niceTime(Main.getInstance().getPlayerCache().get(player.getUniqueId()).getParkourTime()));
             toReturn.add(" &8┃ &fTemps: &a" + TimeUtil.niceTime(lobbyPlayer.getParkour().getCurrentTime()));
         } else {
             String prefix = profile.getRank().getTabPrefix();
@@ -76,7 +76,7 @@ public class ScoreboardAdapter implements FrameAdapter {
         }
         toReturn.add("&2");
         toReturn.add(" &8┃ &fConnectés: &a" + BukkitAPI.getTotalPlayers());
-        toReturn.add(" &8┃ &fHub: &a#" + (Main.getFactory(Bukkit.getPort()).getName().replace("Lobby-", "")) + " &7(&f" + Bukkit.getOnlinePlayers().size() + "&7)");
+        toReturn.add(" &8┃ &fHub: &a#" + (Main.getInstance().getFactory(Bukkit.getPort()).getName().replace("Lobby-", "")) + " &7(&f" + Bukkit.getOnlinePlayers().size() + "&7)");
         toReturn.add("&3");
         toReturn.add("&e        " + ip.get(index));
 

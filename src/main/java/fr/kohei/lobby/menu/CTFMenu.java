@@ -1,7 +1,7 @@
 package fr.kohei.lobby.menu;
 
 import fr.kohei.BukkitAPI;
-import fr.kohei.manager.server.CTFServer;
+import fr.kohei.common.cache.server.impl.CTFServer;
 import fr.kohei.menu.Button;
 import fr.kohei.menu.Menu;
 import fr.kohei.menu.buttons.DisplayButton;
@@ -34,9 +34,9 @@ public class CTFMenu extends PaginatedMenu {
         buttons.put(3, new Button() {
             @Override
             public ItemStack getButtonItem(Player player) {
-                return new ItemBuilder(Heads.CHEST_MINECART.toItemStack()).setName("&cEn Attente").setLore(
+                return new ItemBuilder(Heads.CHEST_MINECART.toItemStack()).setName("&6&lEn Attente").setLore(
                         "",
-                        "&f&l» &cCliquez-ici pour y accéder"
+                        "&f&l» &eCliquez-ici pour y accéder"
                 ).toItemStack();
             }
 
@@ -50,9 +50,9 @@ public class CTFMenu extends PaginatedMenu {
         buttons.put(4, new Button() {
             @Override
             public ItemStack getButtonItem(Player player) {
-                return new ItemBuilder(Heads.COMMAND_BLOCK.toItemStack()).setName("&cEn Jeu &8(&cSoon&8)").setLore(
+                return new ItemBuilder(Heads.COMMAND_BLOCK.toItemStack()).setName("&6&lEn Jeu &8(&cSoon&8)").setLore(
                         "",
-                        "&f&l» &cCliquez-ici pour y accéder"
+                        "&f&l» &eCliquez-ici pour y accéder"
                 ).toItemStack();
             }
 
@@ -62,7 +62,7 @@ public class CTFMenu extends PaginatedMenu {
             }
         });
 
-        buttons.put(5, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&cSoon").toItemStack()));
+        buttons.put(5, new DisplayButton(new ItemBuilder(Heads.SOON.toItemStack()).setName("&6&lSoon").toItemStack()));
 
         return buttons;
     }
@@ -73,7 +73,7 @@ public class CTFMenu extends PaginatedMenu {
 
         int i = 0;
 
-        for (CTFServer ctfServer : BukkitAPI.getServerCache().getCtfServers().values()) {
+        for (CTFServer ctfServer : BukkitAPI.getCommonAPI().getServerCache().getCtfServers().values()) {
             if (playing) {
                 if (ctfServer.getStatus() == CTFServer.ServerStatus.PLAYING) {
                     buttons.put(i++, new CTFButton(ctfServer));
@@ -102,23 +102,23 @@ public class CTFMenu extends PaginatedMenu {
         public ItemStack getButtonItem(Player player) {
 
             if (server.getStatus() == CTFServer.ServerStatus.WAITING) {
-                return new ItemBuilder(Heads.BALLOON_GREEN.toItemStack()).setName("&cCTF-" + server.getPort()).setLore(
+                return new ItemBuilder(Heads.BALLOON_GREEN.toItemStack()).setName("&6&lCTF-" + server.getPort()).setLore(
                         "",
-                        "&f➥ &c&lServeur",
+                        "&f➥ &6&lServeur",
                         " &fJoueurs: &a" + server.getPlayers() + "&8/&a16",
                         " &fStatus: &eAttente",
                         " &fStart: &c" + server.getStart(),
                         " ",
-                        "&f&l» &cCliquez-ici pour rejoindre"
+                        "&f&l» &eCliquez-ici pour rejoindre"
                 ).toItemStack();
             } else {
-                return new ItemBuilder(Heads.BALLOON_RED.toItemStack()).setName("&cCTF-" + server.getPort()).setLore(
+                return new ItemBuilder(Heads.BALLOON_RED.toItemStack()).setName("&6&lCTF-" + server.getPort()).setLore(
                         "",
-                        "&f➥ &c&lServeur",
+                        "&f➥ &6&lServeur",
                         " &fJoueurs: &a" + server.getPlayers() + "&8/&a16",
                         " &fStatus: &cEn cours",
                         " ",
-                        "&f&l» &cCliquez-ici pour rejoindre"
+                        "&f&l» &eCliquez-ici pour rejoindre"
                 ).toItemStack();
             }
         }
