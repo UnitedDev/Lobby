@@ -25,6 +25,11 @@ public class BoxMenu extends PaginatedMenu {
     }
 
     @Override
+    public int getGlassColor() {
+        return 14;
+    }
+
+    @Override
     public Map<Integer, Button> getGlobalButtons(Player player) {
         Map<Integer, Button> buttons = new HashMap<>();
 

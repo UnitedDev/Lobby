@@ -38,6 +38,12 @@ public class LobbyPlayer {
 
         if(profile.getRank().permissionPower() > 0) {
             player.setAllowFlight(true);
+            LobbyProfileData lobbyProfileData = new LobbyProfileData(player);
+            if(lobbyProfileData.getFly().equals("aucun")) {
+                lobbyProfileData.setFly("dj");
+            }
+        } else {
+            player.setAllowFlight(false);
         }
 
         player.getInventory().setItem(0, LobbyItems.SERVER_SELECTOR.toItemStack());

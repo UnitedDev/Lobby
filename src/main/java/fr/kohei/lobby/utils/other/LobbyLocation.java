@@ -1,12 +1,16 @@
-package fr.kohei.lobby.utils;
+package fr.kohei.lobby.utils.other;
 
 import fr.kohei.lobby.Main;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 @Getter
 public class LobbyLocation {
+    private final World world;
+
     private final double x;
     private final double y;
     private final double z;
@@ -14,6 +18,8 @@ public class LobbyLocation {
     private final float pitch;
 
     public LobbyLocation(double x, double y, double z, float yaw, float pitch) {
+        this.world = Bukkit.getWorld("world");
+
         this.x = x;
         this.y = y;
         this.z = z;
@@ -22,6 +28,8 @@ public class LobbyLocation {
     }
 
     public LobbyLocation(double x, double y, double z) {
+        this.world = Bukkit.getWorld("world");
+
         this.x = x;
         this.y = y;
         this.z = z;
@@ -30,6 +38,6 @@ public class LobbyLocation {
     }
 
     public Location getLocation() {
-        return new Location(Main.getInstance().getSpawn().getWorld(), x, y, z, yaw, pitch);
+        return new Location(world, x, y, z, yaw, pitch);
     }
 }

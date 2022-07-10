@@ -1,7 +1,7 @@
 package fr.kohei.lobby.task;
 
 import fr.kohei.lobby.Main;
-import fr.kohei.lobby.utils.MathUtil;
+import fr.kohei.lobby.utils.other.MathUtil;
 import lombok.Getter;
 import net.minecraft.server.v1_8_R3.EnumParticle;
 import org.bukkit.Bukkit;

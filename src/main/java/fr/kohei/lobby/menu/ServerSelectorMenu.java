@@ -61,7 +61,7 @@ public class ServerSelectorMenu extends GlassMenu {
 
             @Override
             public void clicked(Player player, int slot, ClickType clickType, int hotbarButton) {
-                new ProfileMenu(new ServerSelectorMenu()).openMenu(player);
+                new LobbySelectorMenu(new ServerSelectorMenu(), false).openMenu(player);
             }
         });
         buttons.put(16, new Button() {

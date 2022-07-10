@@ -2,7 +2,7 @@ package fr.kohei.lobby.menu;
 
 import fr.kohei.lobby.Main;
 import fr.kohei.lobby.manager.box.Box;
-import fr.kohei.lobby.utils.InstantFirework;
+import fr.kohei.lobby.utils.firework.InstantFirework;
 import fr.kohei.menu.Button;
 import fr.kohei.menu.Menu;
 import fr.kohei.menu.buttons.DisplayButton;

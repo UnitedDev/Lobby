@@ -1,4 +1,4 @@
-package fr.kohei.lobby.utils;
+package fr.kohei.lobby.utils.firework;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;

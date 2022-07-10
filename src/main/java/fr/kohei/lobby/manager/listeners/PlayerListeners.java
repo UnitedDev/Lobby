@@ -1,17 +1,16 @@
-package fr.kohei.lobby.listeners;
+package fr.kohei.lobby.manager.listeners;
 
 import com.lunarclient.bukkitapi.LunarClientAPI;
 import com.lunarclient.bukkitapi.nethandler.client.LCPacketNotification;
-import com.lunarclient.bukkitapi.nethandler.shared.LCPacketEmoteBroadcast;
 import fr.kohei.BukkitAPI;
 import fr.kohei.common.cache.data.ProfileData;
 import fr.kohei.common.cache.rank.Rank;
-import fr.kohei.common.cache.server.impl.UHCServer;
 import fr.kohei.lobby.Main;
 import fr.kohei.lobby.manager.player.LobbyPlayer;
+import fr.kohei.lobby.manager.player.LobbyProfileData;
 import fr.kohei.lobby.menu.*;
 import fr.kohei.lobby.manager.packets.PlayerChatPacket;
-import fr.kohei.lobby.utils.MathUtil;
+import fr.kohei.lobby.utils.other.MathUtil;
 import fr.kohei.menu.Menu;
 import fr.kohei.staff.events.StaffDisableEvent;
 import fr.kohei.utils.ChatUtil;
@@ -28,7 +27,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -40,7 +38,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
 
 @RequiredArgsConstructor
 public class PlayerListeners implements Listener {
@@ -52,11 +51,26 @@ public class PlayerListeners implements Listener {
         LobbyPlayer lobbyPlayer = new LobbyPlayer(player);
         ProfileData profile = BukkitAPI.getCommonAPI().getProfile(player.getUniqueId());
 
+        if (!profile.getServersData().containsKey("skin"))
+            profile.getServersData().put("skin", "aucun");
+        else
+            Main.getInstance().getCosmeticManager().getSkinManager().onJoin(player);
+
+        if (!profile.getServersData().containsKey("pet"))
+            profile.getServersData().put("pet", "aucun");
+
+        if (!profile.getServersData().containsKey("fly"))
+            profile.getServersData().put("fly", "aucun");
+
+        if (!profile.getServersData().containsKey("bought_skins"))
+            profile.getServersData().put("bought_skins", new ArrayList<>());
+
+        if (!profile.getServersData().containsKey("bought_pets"))
+            profile.getServersData().put("bought_pets", new ArrayList<>());
+
         lobbyPlayer.teleportToSpawn();
 
         Rank rank = profile.getRank();
-
-        LunarClientAPI.getInstance().sendPacket(player, new LCPacketNotification("&atest", 5000, "1"));
 
         for (ScoreboardTeam team : Main.getInstance().getTeams()) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(team.createTeam());
@@ -86,6 +100,9 @@ public class PlayerListeners implements Listener {
             player.sendMessage(ChatUtil.translate("&7▎ &fBon jeu sur le serveur, si vous avez une question contactez un staff qui apparait dans le &d/stafflist&f."));
             player.sendMessage(" ");
         }, 5);
+
+
+        BukkitAPI.getCommonAPI().saveProfile(player.getUniqueId(), profile);
     }
 
     @EventHandler
@@ -121,11 +138,13 @@ public class PlayerListeners implements Listener {
 
         Player player = (Player) event.getWhoClicked();
 
+        if (event.getCurrentItem() == null || !event.getCurrentItem().hasItemMeta() || !event.getCurrentItem().getItemMeta().hasDisplayName())
+            return;
         if (event.getCurrentItem().getItemMeta().getDisplayName().contains("Profil")) {
             InventoryView openedInventory = player.getOpenInventory();
             Menu oldMenu = null;
 
-            if(openedInventory.getTopInventory() != null) {
+            if (openedInventory.getTopInventory() != null) {
                 oldMenu = new ServerSelectorMenu();
             }
 
@@ -288,6 +307,9 @@ public class PlayerListeners implements Listener {
             player.setAllowFlight(false);
             return;
         }
+
+        LobbyProfileData lobbyProfile = new LobbyProfileData(player);
+        if (lobbyProfile.getFly().equals("fly")) return;
 
         event.setCancelled(true);
         player.setVelocity(player.getLocation().getDirection().multiply(2).setY(1));

@@ -1,11 +1,9 @@
 package fr.kohei.lobby.manager.items;
 
 import fr.kohei.lobby.Main;
+import fr.kohei.lobby.manager.cosmetics.skin.SkinSelectorMenu;
 import fr.kohei.lobby.manager.player.LobbyPlayer;
-import fr.kohei.lobby.menu.BoxMenu;
-import fr.kohei.lobby.menu.LobbySelectorMenu;
-import fr.kohei.lobby.menu.ServerSelectorMenu;
-import fr.kohei.lobby.menu.ShopMenu;
+import fr.kohei.lobby.menu.*;
 import fr.kohei.utils.Heads;
 import fr.kohei.utils.item.CustomItem;
 import org.bukkit.Material;
@@ -21,6 +19,7 @@ public class LobbyItems {
     public static final CustomItem SERVER_SELECTOR = new CustomItem(Material.COMPASS, "&a&lMenu Principal", click -> new ServerSelectorMenu().openMenu(click.getPlayer()));
     public static final CustomItem PROFILE = new CustomItem(new ItemStack(Material.SKULL_ITEM, 1, (short) SkullType.PLAYER.ordinal()), "&d&lMon Profil", c -> {});
     public static final CustomItem COSMETICS = new CustomItem(Heads.COAL_CHEST.toItemStack(), "&6&lCosmétiques", click -> {
+        new CosmeticsMenu().openMenu(click.getPlayer());
     });
     public static final CustomItem LAST_CHECKPOINT = new CustomItem(Material.FEATHER, "Dernier Checkpoint", click -> click.getPlayer().teleport(Main.getInstance().getJumpManager().getCheckpoints().get(new LobbyPlayer(click.getPlayer()).getParkour().getCheckpoint())));
     public static final CustomItem RESTART_PARKOUR = new CustomItem(Material.SLIME_BALL, "Recommencer", click -> new LobbyPlayer(click.getPlayer()).leaveParkour());

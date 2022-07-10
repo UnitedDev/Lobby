@@ -1,4 +1,4 @@
-package fr.kohei.lobby.utils;
+package fr.kohei.lobby.utils.other;
 
 import net.minecraft.server.v1_8_R3.EnumParticle;
 import net.minecraft.server.v1_8_R3.Packet;

@@ -1,4 +1,4 @@
-package fr.kohei.lobby.utils;
+package fr.kohei.lobby.utils.other;
 
 import com.google.common.base.Strings;
 import org.bukkit.ChatColor;

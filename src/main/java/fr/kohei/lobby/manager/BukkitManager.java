@@ -2,7 +2,7 @@ package fr.kohei.lobby.manager;
 
 import fr.kohei.lobby.Main;
 import fr.kohei.lobby.manager.jump.JumpCommands;
-import fr.kohei.lobby.listeners.PlayerListeners;
+import fr.kohei.lobby.manager.listeners.PlayerListeners;
 import fr.kohei.BukkitAPI;
 import org.bukkit.plugin.PluginManager;
 

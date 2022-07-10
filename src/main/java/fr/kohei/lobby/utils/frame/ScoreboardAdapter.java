@@ -5,7 +5,7 @@ import fr.kohei.common.cache.data.Division;
 import fr.kohei.common.cache.data.ProfileData;
 import fr.kohei.lobby.Main;
 import fr.kohei.lobby.manager.player.LobbyPlayer;
-import fr.kohei.lobby.utils.ProgressBar;
+import fr.kohei.lobby.utils.other.ProgressBar;
 import fr.kohei.utils.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

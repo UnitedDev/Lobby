@@ -26,10 +26,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public class Main extends JavaPlugin {
@@ -71,8 +69,11 @@ public class Main extends JavaPlugin {
 
         BukkitAPI.getCommonAPI().getMessaging().registerAdapter(PlayerChatPacket.class, new PlayerChatSubscriber());
 
+        Queue<Rank> ranksNotSorted = BukkitAPI.getCommonAPI().getRanks();
+        List<Rank> ranks = ranksNotSorted.stream().sorted(Comparator.comparingInt(Rank::getPermissionPower).reversed()).collect(Collectors.toList());
+
         int i = 0;
-        for (Rank value : BukkitAPI.getCommonAPI().getRanks()) {
+        for (Rank value : ranks) {
             String prefix = ChatUtil.translate(value.getTabPrefix() + (value.token().equalsIgnoreCase("default") ? "" : " "));
 
             char character = alphabet[i++];
@@ -80,7 +81,7 @@ public class Main extends JavaPlugin {
             teams.add(new ScoreboardTeam(String.valueOf(character), prefix));
         }
 
-        new LobbyUpdateTask(this).runTaskTimer(this, 0, 5 * 20);
+        new LobbyUpdateTask(this).runTaskTimer(this, 0, 20);
         new PlayersTask(this).runTaskTimer(this, 0, 20);
 
         this.boxTask = new BoxTask(this);

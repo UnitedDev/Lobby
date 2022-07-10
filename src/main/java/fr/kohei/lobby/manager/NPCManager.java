@@ -6,16 +6,17 @@ import com.github.juliarn.npc.event.PlayerNPCInteractEvent;
 import com.github.juliarn.npc.event.PlayerNPCShowEvent;
 import com.github.juliarn.npc.modifier.AnimationModifier;
 import com.github.juliarn.npc.modifier.MetadataModifier;
+import fr.kohei.lobby.Main;
 import fr.kohei.lobby.manager.npc.CustomNPC;
+import fr.kohei.lobby.utils.other.LobbyLocation;
+import net.minecraft.server.v1_8_R3.*;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scoreboard.NameTagVisibility;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 public class NPCManager implements Listener {
     private final NPCPool npcPool;
@@ -51,19 +52,23 @@ public class NPCManager implements Listener {
                 npc.metadata().queue(MetadataModifier.EntityMetadata.SKIN_LAYERS, true)
         );
 
+        Bukkit.getScheduler().runTaskLater(Main.getInstance(), () -> {
+            LobbyLocation lobbyLocation = CustomNPC.getByNPC(npc).getLobbyLocation();
+            npc.rotation().queueRotate(lobbyLocation.getYaw(), lobbyLocation.getPitch()).send(event.getPlayer());
+        }, 10);
+
         Player player = event.getPlayer();
-        Scoreboard scoreboard = player.getScoreboard();
+        Scoreboard scoreboard = ((CraftScoreboard) player.getScoreboard()).getHandle();
 
-        Team team;
-        if (scoreboard.getTeam(npc.getProfile().getName()) == null) {
-            team = scoreboard.registerNewTeam(npc.getProfile().getName());
-        } else {
-            team = scoreboard.getTeam(npc.getProfile().getName());
-        }
+        ScoreboardTeam scoreboardTeam = scoreboard.getTeam(npc.getProfile().getName()) == null ? new ScoreboardTeam(scoreboard, npc.getProfile().getName()) : scoreboard.getTeam(npc.getProfile().getName());
+        scoreboardTeam.setNameTagVisibility(ScoreboardTeamBase.EnumNameTagVisibility.NEVER);
 
-        team.setNameTagVisibility(NameTagVisibility.NEVER);
+        scoreboardTeam.getPlayerNameSet().add(npc.getProfile().getName());
+        scoreboard.addPlayerToTeam(npc.getProfile().getName(), scoreboardTeam.getName());
 
-        team.addEntry(npc.getProfile().getName());
+        EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
+        entityPlayer.playerConnection.sendPacket(new PacketPlayOutScoreboardTeam(scoreboardTeam, 1));
+        entityPlayer.playerConnection.sendPacket(new PacketPlayOutScoreboardTeam(scoreboardTeam, 0));
     }
 
     @EventHandler
