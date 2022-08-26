@@ -1,4 +1,4 @@
-main: fr.kohei.lobby.Main
+main: fr.uniteduhc.lobby.Main
 name: Lobby
 version: 1.0.0
 author: Rhodless
